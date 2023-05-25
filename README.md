@@ -6,7 +6,7 @@ Find the topics of lyrics in the top 100 songs and analyze how they change over 
 创建虚拟环境：`conda create -n nlp_project python=3.9`  
 激活虚拟环境：`conda activate nlp_project`  
 
-**之后依赖包还会更新，每一次代码更新都最好运行一次**
+**之后依赖包还会更新，每一次代码更新都最好运行一次**  
 安装依赖包: `pip install -r requirements.txt`    
 
 ## Proposal
