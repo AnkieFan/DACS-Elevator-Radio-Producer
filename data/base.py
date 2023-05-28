@@ -80,6 +80,10 @@ def clean(text, remove_stopwords = False, stem_words = False):
     text = re.sub("in\' ", "ing ", text, flags=re.IGNORECASE)
     text = re.sub(" e - mail ", " email ", text, flags=re.IGNORECASE)
 
+    text = re.sub(" a ", " ", text)
+    text = re.sub(" an ", " ", text)
+    text = re.sub(" the ", " ", text)
+
     text = re.sub("\\【.*?】+|\\《.*?》+|\\#.*?#+|[.!/_,$&%^*±©≥≤≈()<>+""'?@|:;~{}#]+|[——！\[\]\\\，。=？、：“”‘’`￥……（）《》【】]",' ',text)
     text = re.sub(r'\$\w*',' ',text) # remove entitles
     text = re.sub(re.compile(r'\d'),' ',text) # remove numbers
@@ -98,7 +102,7 @@ def clean(text, remove_stopwords = False, stem_words = False):
     # Return a list of words
     return text
 
-def read_cleaned_data(address):
+def read_cleaned_data(address, remove_stopwords = False, stem_words = False):
     path = f'dataset/{address}/'
     files= os.listdir(path)
     files.sort()
@@ -108,7 +112,7 @@ def read_cleaned_data(address):
     for file in files:
         with open(path + file, 'r', encoding='utf-8') as f:
             lines = f.readlines()
-            lines = [clean(l) for l in lines]
+            lines = [clean(text = l, remove_stopwords = remove_stopwords, stem_words=stem_words) for l in lines]
             lines = [l for l in lines if len(l)>0]
             lyrics_token[file[:-4]] = lines
     
