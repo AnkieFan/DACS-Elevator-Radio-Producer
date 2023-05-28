@@ -51,3 +51,65 @@ def store_lyrics(year = None, playlist_id = None):
             file.write(lyrics)
 
     error_df.to_csv(f"dataset/{folder_name}/0_Errors.csv",index=False,header=True)
+
+def clean(text, remove_stopwords = False, stem_words = False):
+    '''
+    Return: word tokens without stop words
+    '''
+    from nltk.corpus import stopwords
+    from nltk.tokenize import word_tokenize
+    from nltk.stem import SnowballStemmer
+   
+    # Empty lyrics
+    if type(text) != str or text=='':
+        return ''
+    
+    text = text.lower()
+    
+    # Clean the text (here i have 2-3 cases of pre-processing by sampling the data. You might need more)
+    text = re.sub("\'s", " ", text) # we have cases like "Sam is" or "Sam's" (i.e. his) these two cases aren't separable, I choose to compromise are kill "'s" directly
+    text = re.sub(" whats ", " what is ", text, flags=re.IGNORECASE)
+    text = re.sub("\'ve", " have ", text)
+    text = re.sub(" wanna ", " want to ", text)
+
+    text = re.sub(" can\'t ", " cannot ", text, flags=re.IGNORECASE)
+    text = re.sub("n\'t ", " not ", text, flags=re.IGNORECASE)
+    text = re.sub(" i\'m ", " i am ", text, flags=re.IGNORECASE)
+    text = re.sub("\'re ", " are ", text, flags=re.IGNORECASE)
+    text = re.sub("\'ll ", " will ", text, flags=re.IGNORECASE)
+    text = re.sub("in\' ", "ing ", text, flags=re.IGNORECASE)
+    text = re.sub(" e - mail ", " email ", text, flags=re.IGNORECASE)
+
+    text = re.sub("\\【.*?】+|\\《.*?》+|\\#.*?#+|[.!/_,$&%^*±©≥≤≈()<>+""'?@|:;~{}#]+|[——！\[\]\\\，。=？、：“”‘’`￥……（）《》【】]",' ',text)
+    text = re.sub(r'\$\w*',' ',text) # remove entitles
+    text = re.sub(re.compile(r'\d'),' ',text) # remove numbers
+    text = re.sub(r'\s\s+',' ',text) # remove extra spaces
+
+    text = word_tokenize(text) 
+
+    if(remove_stopwords):
+        stopwords = stopwords.words('english')
+        text = [w for w in text if not w.lower() in stopwords] 
+
+    if(stem_words):
+        stemmer = SnowballStemmer('english')
+        text = [stemmer.stem(w) for w in text]
+    
+    # Return a list of words
+    return text
+
+def read_cleaned_data(address):
+    path = f'dataset/{address}/'
+    files= os.listdir(path)
+    files.sort()
+
+    lyrics_token = {}
+
+    for file in files:
+        with open(path + file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            lines = [clean(l) for l in lines]
+            lines = [l for l in lines if len(l)>0]
+            lyrics_token[file[:-4]] = lines
+    
+    return lyrics_token
