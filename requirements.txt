@@ -38,7 +38,7 @@ pure-eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_16428759
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1681904169130/work
 python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1626286286081/work
 pytz==2023.3
-pywin32==305.1
+pywin32==305
 pyzmq @ file:///C:/b/abs_8b16zbmf46/croot/pyzmq_1682697651374/work
 redis==4.5.5
 requests==2.30.0
@@ -54,3 +54,5 @@ urllib3==2.0.2
 wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1673864653149/work
 yarl==1.9.2
 zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1677313463193/work
+nltk==3.8.1
+gensim==4.3.0
