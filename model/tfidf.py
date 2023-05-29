@@ -1,6 +1,17 @@
 import math
 
-def tfidf(lyrics_tokens:str, n_gram = 1):
+def get_tfidf(lyrics_tokens:list, n_gram = (1,1)):
+    '''
+
+    Args:
+    lyrics_tokens: a list of sentences(list containing word tokens)
+    n_gram: a tuple which is the range of n_gram
+
+    Returns:
+    A tuple containing 2 dictionaries. The first one are term frequency of words. The second one are tfidf values of words.
+    '''
+    if(n_gram != (1,1)): lyrics_tokens = [expand_ngram_list(lyrics_tokens=sent, n_gram=n_gram) for sent in lyrics_tokens]
+
     count = {}
     tfidf = {}
     total_length = 0
@@ -18,15 +29,28 @@ def tfidf(lyrics_tokens:str, n_gram = 1):
         try:
             tf = count[word]
             idf = math.log(len(lyrics_tokens) / (tfidf[word]+1), math.e)
-            print(f'word {word} with tf = {tf} and idf = {idf}')
+            #print(f'word {word} with tf = {tf} and idf = {idf}')
         except ValueError:
             print("math domain error on:",word)
             continue
 
         tfidf[word] = tf*idf
 
-    return (count, tfidf)
+    return (sorted(count.items(), key=lambda x: x[1], reverse=True), sorted(tfidf.items(), key=lambda x: x[1], reverse=True))
+
+def expand_ngram_list(lyrics_tokens:list, n_gram:tuple):
+    new_list = []
+    start, end = n_gram
     
+    for i in range(start, end+1):
+        if(i > len(lyrics_tokens)):
+            break
+        for j in range(len(lyrics_tokens)-i+1):
+            new_item = ' '.join(lyrics_tokens[j:j+i])
+            new_list.append(new_item)
+    
+    return new_list
+
 if __name__ == '__main__':
-    lyrics = [['lately', 'i', 'have', 'been', 'i', 'have', 'been', 'thinking'], ['i', 'want', 'you', 'to', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['when', 'morning', 'comes'], ['when', 'we', 'see', 'what', 'we', 'have', 'become'], ['in', 'cold', 'light', 'of', 'day', 'we', 'are', 'flame', 'in', 'wind'], ['not', 'fire', 'that', 'we', 'have', 'begun'], ['every', 'argument', 'every', 'word', 'we', 'can', 'not', 'take', 'back'], ['cause', 'with', 'all', 'that', 'has', 'happened'], ['i', 'think', 'that', 'we', 'both', 'know', 'way', 'that', 'this', 'story', 'ends'], ['then', 'only', 'for', 'minute'], ['i', 'want', 'to', 'change', 'my', 'mind'], ['cause', 'this', 'just', 'do', 'not', 'feel', 'right', 'to', 'me'], ['i', 'want', 'to', 'raise', 'your', 'spirits'], ['i', 'want', 'to', 'see', 'you', 'smile', 'but'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['lately', 'i', 'have', 'been', 'i', 'have', 'been', 'thinking'], ['i', 'want', 'you', 'to', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['you', 'might', 'also', 'like'], ['when', 'evening', 'falls'], ['and', 'i', 'am', 'left', 'there', 'with', 'my', 'thoughts'], ['and', 'image', 'of', 'you', 'being', 'with', 'someone', 'else'], ['well', 'it', 'eating', 'me', 'up', 'inside'], ['but', 'we', 'ran', 'our', 'course', 'we', 'pretended', 'we', 'are', 'okay'], ['now', 'if', 'we', 'jump', 'together', 'at', 'least', 'we', 'can', 'swim'], ['far', 'away', 'from', 'wreck', 'we', 'made'], ['then', 'only', 'for', 'minute'], ['i', 'want', 'to', 'change', 'my', 'mind'], ['cause', 'this', 'just', 'do', 'not', 'feel', 'right', 'to', 'me'], ['i', 'want', 'to', 'raise', 'your', 'spirits'], ['i', 'want', 'to', 'see', 'you', 'smile', 'but'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['lately', 'i', 'have', 'been', 'i', 'have', 'been', 'thinking'], ['i', 'want', 'you', 'to', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['so', 'i', 'will', 'go', 'i', 'will', 'go'], ['i', 'will', 'go', 'go', 'go'], ['so', 'i', 'will', 'go', 'i', 'will', 'go'], ['i', 'will', 'go', 'go', 'go'], ['lately', 'i', 'have', 'been', 'i', 'have', 'been', 'thinking'], ['i', 'want', 'you', 'to', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['even', 'though', 'i', 'might', 'not', 'like', 'this'], ['i', 'think', 'that', 'you', 'will', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['then', 'only', 'for', 'minute', 'only', 'for', 'minute'], ['i', 'want', 'to', 'change', 'my', 'mind'], ['cause', 'this', 'just', 'do', 'not', 'feel', 'right', 'to', 'me', 'right', 'to', 'me'], ['i', 'want', 'to', 'raise', 'your', 'spirits', 'wan', 'na', 'raise', 'your', 'spirits'], ['i', 'want', 'to', 'see', 'you', 'smile', 'but'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['know', 'that', 'means', 'i', 'will', 'have', 'to', 'leave'], ['lately', 'i', 'have', 'been', 'i', 'have', 'been', 'thinking'], ['i', 'want', 'you', 'to', 'be', 'happier', 'i', 'want', 'you', 'to', 'be', 'happier'], ['so', 'i', 'will', 'go', 'i', 'will', 'go'], ['i', 'will', 'go', 'go', 'go', 'embed']]
-    print(sorted(tfidf(lyrics)[1].items(), key=lambda x: x[1], reverse=True))
+    lyrics = [['come', 'on', 'harry', 'we', 'want', 'to', 'say', 'goodnight', 'to', 'you'], ['holding', 'me', 'back'], ['gravity', 'holding', 'me', 'back'], ['i', 'want', 'you', 'to', 'hold', 'out', 'palm', 'of', 'your', 'hand'], ['why', 'do', 'not', 'we', 'leave', 'it', 'at', 'that'], ['nothing', 'to', 'say'], ['when', 'everything', 'gets', 'in', 'way'], ['seems', 'you', 'can', 'not', 'be', 'replaced'], ['and', 'i', 'am', 'one', 'who', 'will', 'stay', 'oh-oh-oh'], ['in', 'this', 'world', 'it', 'just', 'us'], ['you', 'know', 'it', 'not', 'same', 'as', 'it', 'was'], ['in', 'this', 'world', 'it', 'just', 'us'], ['you', 'know', 'it', 'not', 'same', 'as', 'it', 'was'], ['as', 'it', 'was', 'as', 'it', 'was'], ['you', 'know', 'it', 'not', 'same'], ['answer', 'phone'], ['``', 'harry', 'you', 'are', 'no', 'good', 'alone'], ['why', 'are', 'you', 'sitting', 'at', 'home', 'on', 'floor'], ['what', 'kind', 'of', 'pills', 'are', 'you', 'on', '``'], ['ringing', 'bell'], ['and', 'nobody', 'coming', 'to', 'help'], ['your', 'daddy', 'lives', 'by', 'himself'], ['he', 'just', 'wants', 'to', 'know', 'that', 'you', 'are', 'well', 'oh-oh-oh'], ['you', 'might', 'also', 'like'], ['in', 'this', 'world', 'it', 'just', 'us'], ['you', 'know', 'it', 'not', 'same', 'as', 'it', 'was'], ['in', 'this', 'world', 'it', 'just', 'us'], ['you', 'know', 'it', 'not', 'same', 'as', 'it', 'was'], ['as', 'it', 'was', 'as', 'it', 'was'], ['you', 'know', 'it', 'not', 'same'], ['go', 'home', 'get', 'ahead', 'light-speed', 'internet'], ['i', 'do', 'not', 'want', 'to', 'talk', 'about', 'way', 'that', 'it', 'was'], ['leave', 'america', 'two', 'kids', 'follow', 'her'], ['i', 'do', 'not', 'want', 'to', 'talk', 'about', 'who', 'doing', 'it', 'first'], ['hey'], ['as', 'it', 'was'], ['you', 'know', 'it', 'not', 'same', 'as', 'it', 'was'], ['as', 'it', 'was', 'as', 'it', 'was', 'embed']]
+    print(get_tfidf(lyrics, n_gram=(1,3))[1].items(), key=lambda x: x[1], reverse=True)
