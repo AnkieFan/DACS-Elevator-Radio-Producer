@@ -125,7 +125,7 @@ def read_cleaned_data(address, remove_stopwords=False, stem_words=False):
     return lyrics_token
 
 
-def evaluate(topic_words, tokens):
+def evaluate_c_v(topic_words, tokens):
     """
     Evaluate the performance using C_V,
         a combined metric of
@@ -156,5 +156,34 @@ def evaluate(topic_words, tokens):
                         corpus=corpus,
                         dictionary=dictionary,
                         coherence='c_v')
+    coherence = cm.get_coherence()
+    return coherence
+
+
+def evaluate_u_mass(topic_words):
+    """
+    Evaluate the performance using u_mass,
+        a combined metric of
+        document co-occurrence counts,
+        one-preceding segmentation,
+        and a logarithmic conditional probability as a confirmation measure (Mifrah and Benlahmar, 2020).
+    The gensim.models.coherencemodel is called with topics,
+        corpus, dictionary and coherence with 'u_mass' in our model.
+    The closer the score is to 0, the more understandable a topic can be to a human.
+
+    :param topic_words: Topics in List.
+        format: topic_words = [
+        ['human', 'computer', 'system', 'interface'],
+        ['graph', 'minors', 'trees', 'eps']
+        ]
+    :return: coherence
+    """
+    from gensim.models.coherencemodel import CoherenceModel
+    from gensim.test.utils import common_corpus, common_dictionary
+
+    cm = CoherenceModel(topics=topic_words,
+                        corpus=common_corpus,
+                        dictionary=common_dictionary,
+                        coherence='u_mass')
     coherence = cm.get_coherence()
     return coherence
