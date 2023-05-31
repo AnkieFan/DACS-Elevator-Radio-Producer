@@ -21,7 +21,12 @@ def get_lyrics(title, artist):
         print(f"There's error when getting lyrcis of '{title}' by {artist}")
         print(str(e))
 
-def store_lyrics(year = None, playlist_id = None):
+def store_lyrics(year = None, playlist_id = None) -> None:
+    '''
+    Get lyrics from Billboard or Spotify playlist and store them in `dataset` folder.
+    If 2 args are both None, then it will use the latest Billboard chart.
+
+    '''
     if(playlist_id is None):
         if(year is None or year > 2022 or year < 2006):
             print("Input year is not correct. Now change to the latest one.")
@@ -133,6 +138,17 @@ def lemmertize(words:list[str]):
     return lemmas_sent
 
 def read_cleaned_data(address:str, remove_stopwords = False, stem_words = False) -> dict:
+    '''
+    Read lyrics from folder and clean them
+
+    Args:
+    address(str): the folder name of dataset
+    remove_stopwords (boolean): if we remove the stopwords from lyrics. default False
+    stem_words (boolean): if we turn the words back to original form. default False
+
+    Return:
+    A dictionary with form: {'song name': 'lyrics tokens's}
+    '''
     path = f'dataset/{address}/'
     files= os.listdir(path)
     files.sort()
