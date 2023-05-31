@@ -83,20 +83,21 @@ def clean(text:str, remove_stopwords = False, stem_words = False) -> list:
     text = re.sub("\'s", " ", text) # we have cases like "Sam is" or "Sam's" (i.e. his) these two cases aren't separable, I choose to compromise are kill "'s" directly
     text = re.sub(" whats ", " what is ", text, flags=re.IGNORECASE)
     text = re.sub("\'ve", " have ", text)
-    text = re.sub(" wanna ", " want to ", text)
 
     text = re.sub(" can\'t ", " cannot ", text, flags=re.IGNORECASE)
+    text = re.sub(" ain\'t ", " am not ", text, flags=re.IGNORECASE)
+    text = re.sub(" tryna ", " try to ", text, flags=re.IGNORECASE)
+    text = re.sub(" wanna ", " want to ", text, flags=re.IGNORECASE)
+    text = re.sub(" gonna ", " going to ", text, flags=re.IGNORECASE)
+    text = re.sub(" \'em ", " them ", text, flags=re.IGNORECASE)
+
     text = re.sub("n\'t ", " not ", text, flags=re.IGNORECASE)
     text = re.sub(" i\'m ", " i am ", text, flags=re.IGNORECASE)
     text = re.sub("\'re ", " are ", text, flags=re.IGNORECASE)
     text = re.sub("\'ll ", " will ", text, flags=re.IGNORECASE)
-    text = re.sub("in\' ", "ing ", text, flags=re.IGNORECASE)
+    text = re.sub("in\'", "ing", text, flags=re.IGNORECASE)
     text = re.sub(" e - mail ", " email ", text, flags=re.IGNORECASE)
-
-    text = re.sub(" a ", " ", text)
-    text = re.sub(" an ", " ", text)
-    text = re.sub(" the ", " ", text)
-
+    
     text = re.sub("\\【.*?】+|\\《.*?》+|\\#.*?#+|[.!/_,$&%^*±©≥≤≈()<>+""'?@|:;~{}#]+|[——！\[\]\\\，。=？、：“”‘’`￥……（）《》【】]",' ',text)
     text = re.sub(r'\$\w*',' ',text) # remove entitles
     text = re.sub(re.compile(r'\d'),' ',text) # remove numbers
