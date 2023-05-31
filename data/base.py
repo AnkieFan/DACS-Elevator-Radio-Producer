@@ -23,12 +23,16 @@ def get_lyrics(title, artist):
 
 def store_lyrics(year = None, playlist_id = None):
     if(playlist_id is None):
+        if(year is None or year > 2022 or year < 2006):
+            print("Input year is not correct. Now change to the latest one.")
+            year = "2022"
+
         if os.path.exists(f"dataset/{year}"):
             print("We already have the data for this year that can be used.")
             return
         
         songs = from_billboard.get_top_songs(year)
-        folder_name = "current" if year == None else str(year)
+        folder_name = "2022" if year == None else str(year)
     else:
         songs = from_spotify.get_songs(playlist_id=playlist_id)
         folder_name = str(playlist_id)
@@ -64,9 +68,12 @@ def clean(text:str, remove_stopwords = False, stem_words = False) -> list:
     # Empty lyrics
     if type(text) != str or text=='':
         return ''
-    
+
     text = text.lower()
     
+    if(text.endswith("embed")):
+        text = text[:-5]
+
     # Clean the text (here i have 2-3 cases of pre-processing by sampling the data. You might need more)
     text = re.sub("\'s", " ", text) # we have cases like "Sam is" or "Sam's" (i.e. his) these two cases aren't separable, I choose to compromise are kill "'s" directly
     text = re.sub(" whats ", " what is ", text, flags=re.IGNORECASE)
@@ -140,3 +147,19 @@ def read_cleaned_data(address:str, remove_stopwords = False, stem_words = False)
             lyrics_token[file[:-4]] = lines
     
     return lyrics_token
+
+def store_extraction_result(result:dict, filename:str):
+    df = result_dict_to_df(result)
+    df.to_csv(f"./result/{filename}", index=False)
+    return df
+
+def result_dict_to_df(result:dict) -> pd.DataFrame:
+    d = {"name":[], "topic1":[], "topic2":[], "topic3":[], "topic4":[], "topic5":[]}
+    for key in result.keys():
+        if(len(result[key])!= 5): continue
+
+        d["name"].append(key)
+        v = result[key]
+        for i in range(5):
+            d[f"topic{(i+1)}"].append(v[i][0])
+    return pd.DataFrame(d)
