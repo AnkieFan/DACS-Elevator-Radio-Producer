@@ -17,11 +17,11 @@ def plot_one_per_song(df, cluster_no = 5, wv_model = None):
     wordvector, new_words, count = get_infos(Counter(words), wv_model)
     plot_results(wordvector, new_words, count, cluster_no)
 
-def plot_five_per_song(df, cluster_no = 5, wv_model = None):
+def plot_five_per_song(df, cluster_no = 5, word_no = 100, wv_model = None):
     words = generate_word_list(df, 5)
     c = Counter(words)
     c = sorted(c.items(), key=lambda x: x[1], reverse=True)
-    wordvector, new_words, count = get_infos(dict(c[:100]), wv_model)
+    wordvector, new_words, count = get_infos(dict(c[:word_no]), wv_model)
     plot_results(wordvector, new_words, count, cluster_no)
 
 def get_cluster_without_project(words, cluster_no = 5):
