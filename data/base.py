@@ -194,7 +194,36 @@ def result_dict_to_df(result: dict) -> pd.DataFrame:
     return pd.DataFrame(d)
 
 
-def evaluate_c_v(topic_words, tokens):
+
+
+def evaluate(df_5_topics:pd, dic_lyrics_tokens:dict, method = 'u_mass'):
+    score = 0
+    i = 0
+    ran = len(dic_lyrics_tokens)
+    for i in range(ran):
+        topics_df = df_5_topics.iloc[i].iloc[1:6]
+        topics = dataframe_to_list_of_list(topics_df)
+
+        name = list(dic_lyrics_tokens.keys())[i]
+        lyrics = dic_lyrics_tokens[name]
+
+        if method == 'u_mass':
+            s = evaluate_u_mass(topics, lyrics)
+            score = score + s
+            # print(s)
+        elif method == 'c_v':
+            s = evaluate_c_v(topics, lyrics)
+            score = score + s
+
+    return round(score/ran, 4)
+
+def dataframe_to_list_of_list(df):
+    # Convert DataFrame to a list of lists
+    result = [df.values.tolist()]
+
+    return result
+
+def evaluate_c_v(topic_words, texts):
     """
     Evaluate the performance using C_V,
         a combined metric of
@@ -216,43 +245,17 @@ def evaluate_c_v(topic_words, tokens):
     """
     import gensim.corpora as corpora
     from gensim.models.coherencemodel import CoherenceModel
-
-    dictionary = corpora.Dictionary(tokens)
-    corpus = [dictionary.doc2bow(token) for token in tokens]
+    from gensim.corpora.dictionary import Dictionary
+    dic = Dictionary(texts)
+    corpus = [dic.doc2bow(text) for text in texts]
 
     cm = CoherenceModel(topics=topic_words,
-                        texts=tokens,
+                        texts=texts,
                         corpus=corpus,
-                        dictionary=dictionary,
+                        dictionary=dic,
                         coherence='c_v')
     coherence = cm.get_coherence()
     return coherence
-
-def evaluate(df_5_topics:pd, dic_lyrics_tokens:dict, method = 'u_mass'):
-    score = 0
-    i = 0
-    ran = len(dic_lyrics_tokens)
-    for i in range(ran):
-        topics_df = df_5_topics.iloc[i].iloc[1:6]
-        topics = dataframe_to_list_of_list(topics_df)
-
-        name = list(dic_lyrics_tokens.keys())[i]
-        lyrics = dic_lyrics_tokens[name]
-
-        if method == 'u_mass':
-            s =  evaluate_u_mass(topics, lyrics)
-            score = score + s
-            # print(s)
-
-    return round(score/ran,3)
-
-
-def dataframe_to_list_of_list(df):
-    # Convert DataFrame to a list of lists
-    result = [df.values.tolist()]
-
-    return result
-
 def evaluate_u_mass(topic_words, texts):
     """
     Evaluate the performance using u_mass,
@@ -305,8 +308,4 @@ def get_word_vectors(words):
             print(f'word {key} dose not have vector')
             continue
     return word_vector
-
-if __name__ == '__main__':
-    from gensim.test.utils import common_corpus, common_dictionary, common_texts
-    print(common_texts)
 
