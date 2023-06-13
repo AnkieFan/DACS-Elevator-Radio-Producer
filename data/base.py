@@ -10,7 +10,7 @@ from nltk.stem import WordNetLemmatizer
 from data import from_billboard
 from data import from_spotify
 
-api_key = "S4gB5_UF7RN_eQUSIQLhnwtNs3LWB_YZYiosgUeussHWTtIsEEFrJ-ViXkQ5F49X" 
+api_key = "Your API key"  # TODO: change here
 genius = lg.Genius(api_key, skip_non_songs=True, excluded_terms=["(Live)"], remove_section_headers=True,timeout=10)
 
 def get_lyrics(title, artist):
