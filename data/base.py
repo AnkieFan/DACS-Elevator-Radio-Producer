@@ -28,7 +28,7 @@ def store_lyrics(year = None, playlist_id = None) -> None:
 
     '''
     if(playlist_id is None):
-        if(year is None or year > 2022 or year < 2006):
+        if(year is None or int(year) > 2022 or int(year) < 2006):
             print("Input year is not correct. Now change to the latest one.")
             year = "2022"
 
