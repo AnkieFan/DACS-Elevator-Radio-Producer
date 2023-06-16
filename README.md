@@ -2,10 +2,23 @@
 Find the topics of lyrics in the top 100 songs and analyze how they change over time by clustering the topics of each song and visualizing the clustering results.
 
 ## How to use
-Install the dependencies: `pip install -r requirements.txt`    
+### Create a new conda virtual environment (cmd)
+`conda create -n nlp_project7 python=3.9`  
+`conda activate nlp_project7`  
+
+#### Install all relied libraries (cmd)
+`pip install -r requirements.txt`
+
+### Change the Genius API key and Spotify API keys in `data/base.py` and `data/from_spotify.py`
++ Genius API key: https://docs.genius.com/
++ Spotify API key: https://developer.spotify.com/documentation/web-api
++ How to apply for spotify API keys: https://medium.com/@maxtingle/getting-started-with-spotifys-api-spotipy-197c3dc6353b 
+
+### DEMO
+In demo you can try the functions by changing `address` to be a specific year, or the ID of a Spotify playlist.  
 
 ## Dataset
-Dataset are already gathered from the APIs.
+Dataset are gathered from the APIs. Some playlists and year hot 100 songs are already generated and checked(manually check if the lyrics are right) in dataset folder.
 
 ## Proposal
 ### Motivation
